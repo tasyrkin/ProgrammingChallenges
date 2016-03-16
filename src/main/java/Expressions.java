@@ -7,28 +7,25 @@ public class Expressions {
 
         long[][]dp = new long[NUM][NUM];
         for (int i = 0; i < dp.length; i++) {
-            dp[i][1] = 1;
             dp[i][i] = 1;
         }
 
         for (int n = 2; n < dp.length; n++) {
             for (int depth = 1; depth < n; depth++) {
-                {
-                    int leftDepth = depth - 1;
-                    for (int k = leftDepth; k <= n - 1; k++) {
-                        for (int rightDepth = 0; rightDepth <= n - k - 1; rightDepth++) {
-                            dp[n][depth] += dp[k][leftDepth] * dp[n - k - 1][rightDepth];
-                        }
+                //StringBuffer sb = new StringBuffer(String.format("[%d, %d] ->\n", n, depth));
+                for (int k = 0; k <= n - 1; k++) {
+                    for (int l = 0; l <= depth; l++) {
+                        //sb.append(String.format("\t(%d, %d=%d)*(%d, %d=%d)\n", k, depth-1, dp[k][depth-1], n-k-1, l, dp[n-k-1][l]));
+                        dp[n][depth] += dp[k][depth-1]*dp[n-k-1][l];
                     }
                 }
-                {
-                    int rightDepth = depth;
-                    for (int k = 0; k <= n - 1 - rightDepth; k++) {
-                        for (int leftDepth = 1; leftDepth <= k; leftDepth++) {
-                            dp[n][depth] += dp[k][leftDepth] * dp[n-k-1][rightDepth];
-                        }
+                for (int k = 0; k <= n - 1; k++) {
+                    for (int l = 0; l <= depth-2; l++) {
+                        //sb.append(String.format("\t(%d, %d=%d)*(%d, %d=%d)\n", k, l, dp[k][l], n-k-1, depth, dp[n-k-1][depth]));
+                        dp[n][depth] += dp[k][l]*dp[n-k-1][depth];
                     }
                 }
+                //System.out.println(sb.toString() + " => " + dp[n][depth]);
             }
         }
 
@@ -39,6 +36,7 @@ public class Expressions {
             int length = scanner.nextInt();
             int depth = scanner.nextInt();
             long result = length % 2 == 0 ? dp[length/2][depth] : 0;
+            //long result = dp[length][depth];
             System.out.println(result);
         }
     }
